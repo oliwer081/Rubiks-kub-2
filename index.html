@@ -35,12 +35,12 @@
 
         header {
             text-align: center;
-            padding: 3rem 1rem 2rem;
+            padding: 2rem 1rem 1.5rem;
             background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 100%);
         }
 
         h1 {
-            font-size: 2.8rem;
+            font-size: 2.5rem;
             margin: 0 0 10px;
             font-weight: 800;
             letter-spacing: -0.05em;
@@ -50,8 +50,8 @@
             background-color: var(--accent-color);
             color: white;
             border: none;
-            padding: 12px 24px;
-            font-size: 0.95rem;
+            padding: 10px 20px;
+            font-size: 0.9rem;
             font-weight: 700;
             border-radius: 50px;
             cursor: pointer;
@@ -92,21 +92,20 @@
 
         .container {
             max-width: 750px;
-            margin: 40px auto;
+            margin: 30px auto;
             padding: 0 20px 120px;
         }
 
         .step-card {
             background-color: var(--card-bg);
             border-radius: 24px;
-            padding: 35px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            padding: 30px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        h2 { font-size: 1.8rem; margin-top: 10px; font-weight: 700; }
+        h2 { font-size: 1.6rem; margin-top: 10px; font-weight: 700; }
 
-        /* NY 3D ARBETSSTRUKTUR */
         .workspace {
             display: flex;
             flex-direction: column;
@@ -119,11 +118,12 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        /* ÄKTA CSS 3D RUBIKS KUB SCEN */
+        /* FIXAD 3D SCEN OCH PLACERING */
         .scene {
             width: 150px;
             height: 150px;
             perspective: 600px;
+            margin: 20px auto;
         }
 
         .cube3d {
@@ -135,9 +135,10 @@
             transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* Enskilda sidor med äkta 3D-placering */
         .face {
             position: absolute;
+            top: 0;
+            left: 0;
             width: 150px;
             height: 150px;
             border: 4px solid #0f172a;
@@ -148,16 +149,16 @@
             gap: 2px;
             background: #0f172a;
             border-radius: 8px;
+            backface-visibility: cubic-bezier(0,0,0,0);
         }
 
-        /* Skapa de små klistermärkena (stickers) på kuben */
         .sticker {
             width: 100%;
             height: 100%;
             border-radius: 3px;
         }
 
-        /* Positionera sidorna i rymden */
+        /* SÄKRAD 3D POSITIONERING UTAN ATT TÄCKA SKÄRMEN */
         .front  { transform: rotateY(0deg) translateZ(75px); }
         .back   { transform: rotateY(180deg) translateZ(75px); }
         .top    { transform: rotateX(90deg) translateZ(75px); }
@@ -165,7 +166,6 @@
         .left   { transform: rotateY(-90deg) translateZ(75px); }
         .right  { transform: rotateY(90deg) translateZ(75px); }
 
-        /* Färger för klistermärkena */
         .s-red { background-color: #dc2626; }
         .s-blue { background-color: #2563eb; }
         .s-orange { background-color: #ea580c; }
@@ -173,18 +173,16 @@
         .s-white { background-color: #ffffff; }
         .s-yellow { background-color: #eab308; }
 
-        /* Anpassning för 2x2 kubens utseende */
         .mini-cube .face {
             grid-template-columns: repeat(2, 1fr);
             grid-template-rows: repeat(2, 1fr);
         }
 
-        /* KONTROLLER */
         .control-panel { width: 100%; max-width: 400px; }
 
         .notation-display {
-            font-size: 1.4rem;
-            font-family: 'Courier New', monospace;
+            font-size: 1.3rem;
+            font-family: monospace;
             font-weight: 700;
             margin-bottom: 20px;
             background: rgba(0, 0, 0, 0.4);
@@ -192,7 +190,6 @@
             border-radius: 12px;
             border: 1px solid var(--accent-color);
             text-align: center;
-            letter-spacing: 2px;
         }
 
         .btn-group { display: flex; gap: 12px; justify-content: center; }
@@ -205,18 +202,4 @@
             border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 0.95rem;
             transition: all 0.2s;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-        }
-        .action-btn:hover {
-            background-color: var(--accent-color);
-            color: #0f172a;
-            border-color: var(--accent-color);
-            transform: translateY(-2px);
-        }
-
-        .instruction-box {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 20px;
-            border-left: 4px solid var(--accent-
