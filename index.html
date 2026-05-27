@@ -1,128 +1,840 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SolveTheCube - Interaktiv Guide</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SolveTheCube — Lös Rubiks Kub</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:ital,wght@0,300;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & BASE ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:       #0d0d0f;
+  --surface:  #16161a;
+  --surface2: #1e1e24;
+  --border:   #2a2a35;
+  --accent:   #39ff14;      /* neon green */
+  --accent2:  #00e5ff;      /* cyan */
+  --red:      #ff3b30;
+  --blue:     #007aff;
+  --orange:   #ff6b00;
+  --green:    #39ff14;
+  --white:    #ffffff;
+  --yellow:   #ffd60a;
+  --text:     #e8e8f0;
+  --muted:    #6b6b80;
+  --mono:     'Space Mono', monospace;
+  --sans:     'DM Sans', sans-serif;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── NOISE TEXTURE OVERLAY ───────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.4;
+}
+
+/* ── NAV ─────────────────────────────────────────────────────── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(13,13,15,0.9);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  height: 60px;
+}
+.nav-logo {
+  font-family: var(--mono);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+.nav-logo span { color: var(--accent); }
+.nav-tabs {
+  display: flex;
+  gap: 4px;
+}
+.nav-tab {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--muted);
+  padding: 8px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.nav-tab:hover { color: var(--text); border-color: var(--border); }
+.nav-tab.active {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent);
+}
+
+/* ── HERO ────────────────────────────────────────────────────── */
+.hero {
+  padding: 80px 32px 60px;
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 40px;
+  align-items: center;
+}
+.hero-tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 4px 12px;
+  border-radius: 3px;
+  margin-bottom: 20px;
+}
+.hero h1 {
+  font-family: var(--mono);
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+  color: #fff;
+}
+.hero h1 em {
+  font-style: normal;
+  color: var(--accent);
+  position: relative;
+}
+.hero h1 em::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 0; right: 0;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 2px;
+  opacity: 0.4;
+}
+.hero-sub {
+  font-size: 1.05rem;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 480px;
+}
+/* Decorative 3D cube in hero */
+.hero-cube-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── STEP NAVIGATION ─────────────────────────────────────────── */
+.step-nav {
+  max-width: 900px;
+  margin: 0 auto 0;
+  padding: 0 32px 32px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.step-pill {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: block;
+}
+.step-pill:hover { border-color: var(--accent); color: var(--accent); }
+.step-pill.done { border-color: var(--accent); color: var(--accent); background: rgba(57,255,20,0.08); }
+
+/* ── MAIN LAYOUT ─────────────────────────────────────────────── */
+.layout {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 32px 120px;
+  display: none;
+}
+.layout.active { display: block; }
+
+/* ── STEP SECTION ────────────────────────────────────────────── */
+.step {
+  margin-bottom: 64px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+  animation: fadeUp 0.4s ease both;
+}
+.step:first-child { border-top: none; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.step-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.step-num {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(57,255,20,0.1);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  padding: 4px 10px;
+  white-space: nowrap;
+  margin-top: 6px;
+}
+.step-title {
+  font-family: var(--mono);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+}
+.step-body {
+  font-size: 1rem;
+  font-weight: 300;
+  line-height: 1.8;
+  color: #a0a0b8;
+  margin-bottom: 28px;
+}
+.step-body strong { color: var(--text); font-weight: 500; }
+
+/* ── ALGORITHM CARD ──────────────────────────────────────────── */
+.algo-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 20px 0;
+}
+.algo-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: border-color 0.2s;
+}
+.algo-card:hover { border-color: var(--accent2); }
+.algo-cube-wrap { flex-shrink: 0; }
+.algo-notation {
+  font-family: var(--mono);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent2);
+  letter-spacing: 0.05em;
+  flex: 1;
+}
+.algo-desc {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 4px;
+  font-weight: 300;
+}
+
+/* ── INTERACTIVE DEMO ────────────────────────────────────────── */
+.demo-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 32px;
+  margin: 28px 0;
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.demo-cube-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+.demo-label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.demo-controls { flex: 1; min-width: 200px; }
+.move-display {
+  font-family: var(--mono);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+}
+.move-display span { color: var(--accent); }
+.move-counter {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+.demo-btn-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.demo-btn {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.demo-btn-primary {
+  background: var(--accent);
+  color: #000;
+}
+.demo-btn-primary:hover { background: #55ff33; }
+.demo-btn-secondary {
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.demo-btn-secondary:hover { border-color: var(--accent2); color: var(--accent2); }
+.demo-instruction {
+  font-size: 0.88rem;
+  color: var(--muted);
+  font-weight: 300;
+  line-height: 1.6;
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: var(--surface2);
+  border-radius: 8px;
+  border-left: 3px solid var(--accent);
+}
+
+/* ── INFO BOX ────────────────────────────────────────────────── */
+.info-box {
+  background: rgba(0,229,255,0.05);
+  border: 1px solid rgba(0,229,255,0.2);
+  border-radius: 10px;
+  padding: 16px 20px;
+  font-size: 0.9rem;
+  color: #a0c4cc;
+  line-height: 1.7;
+  margin: 20px 0;
+  font-weight: 300;
+}
+.info-box strong { color: var(--accent2); font-weight: 500; }
+.warn-box {
+  background: rgba(255,59,48,0.07);
+  border: 1px solid rgba(255,59,48,0.2);
+  border-radius: 10px;
+  padding: 16px 20px;
+  font-size: 0.9rem;
+  color: #c87070;
+  line-height: 1.7;
+  margin: 20px 0;
+  font-weight: 300;
+}
+
+/* ── NOTATION TABLE ──────────────────────────────────────────── */
+.notation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+  margin: 20px 0;
+}
+.notation-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  text-align: center;
+}
+.notation-key {
+  font-family: var(--mono);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--accent2);
+  display: block;
+  margin-bottom: 6px;
+}
+.notation-val {
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-weight: 300;
+}
+
+/* ── 3D ISOMETRIC CUBE (PERFECT COHESION FIX) ───────────────── */
+.iso {
+  --size: 72px; /* Basstorlek för kubens sidor */
+  --w: calc(var(--size) * 0.866025);
+  --h: calc(var(--size) * 0.5);
+  position: relative;
+  display: inline-block;
+  width: calc(var(--w) * 2) !important;
+  height: calc(var(--size) * 2) !important;
+  vertical-align: middle;
+}
+
+.iso .f {
+  position: absolute;
+  width: var(--size) !important;
+  height: var(--size) !important;
+  display: grid;
+  gap: 2px;
+  padding: 2px;
+  background: #111114;
+  box-sizing: border-box;
+  transform-origin: 0 0;
+}
+
+.iso .f.sz3 { grid-template-columns: repeat(3,1fr); }
+.iso .f.sz2 { grid-template-columns: repeat(2,1fr); }
+
+/* Perfekt matematisk sammanfogning för alla kubtyper (3x3 & 2x2) */
+.iso [class*="top"] {
+  left: var(--w);
+  top: 0;
+  transform: matrix(0.866025, 0.5, -0.866025, 0.5, 0, 0);
+}
+.iso [class*="lft"] {
+  left: 0;
+  top: var(--h);
+  transform: skewY(30deg) scaleX(0.866025);
+}
+.iso [class*="rgt"] {
+  left: var(--w);
+  top: var(--size);
+  transform: skewY(-30deg) scaleX(0.866025);
+}
+
+.sticker {
+  border-radius: 2px;
+  transition: background 0.3s ease;
+}
+/* sticker colors */
+.c-R { background: #ff3b30; }
+.c-B { background: #007aff; }
+.c-O { background: #ff6b00; }
+.c-G { background: #34c759; }
+.c-W { background: #ffffff; }
+.c-Y { background: #ffd60a; }
+.c-X { background: #1e1e26; }
+
+/* ── CHAT BOT ────────────────────────────────────────────────── */
+#chat-btn {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none;
+  cursor: pointer;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 0 rgba(57,255,20,0.4);
+  animation: pulse 2s infinite;
+  transition: transform 0.2s;
+}
+#chat-btn:hover { transform: scale(1.08); }
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(57,255,20,0.4); }
+  70%  { box-shadow: 0 0 0 12px rgba(57,255,20,0); }
+  100% { box-shadow: 0 0 0 0 rgba(57,255,20,0); }
+}
+#chat-btn svg { width: 24px; height: 24px; color: #000; fill: #000; }
+
+#chat-panel {
+  position: fixed;
+  bottom: 96px;
+  right: 28px;
+  width: 340px;
+  height: 440px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  z-index: 200;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  transform-origin: bottom right;
+  transform: scale(0);
+  opacity: 0;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+#chat-panel.open { transform: scale(1); opacity: 1; }
+
+.chat-head {
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.chat-avatar {
+  width: 32px;
+  height: 32px;
+  background: var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+.chat-title {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #fff;
+  flex: 1;
+}
+.chat-online {
+  font-size: 0.65rem;
+  color: var(--accent);
+  font-weight: 300;
+}
+.chat-close {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.chat-close:hover { color: var(--text); }
+
+#chat-msgs {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.chat-msg {
+  max-width: 85%;
+  padding: 9px 13px;
+  border-radius: 10px;
+  font-size: 0.84rem;
+  line-height: 1.55;
+  font-weight: 300;
+}
+.chat-msg.bot {
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  align-self: flex-start;
+  border-radius: 4px 10px 10px 10px;
+}
+.chat-msg.user {
+  background: var(--accent);
+  color: #000;
+  align-self: flex-end;
+  font-weight: 500;
+  border-radius: 10px 10px 4px 10px;
+}
+.chat-typing {
+  align-self: flex-start;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px 10px 10px 10px;
+  padding: 10px 14px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+.chat-typing span {
+  width: 6px; height: 6px;
+  background: var(--muted);
+  border-radius: 50%;
+  animation: blink 1.2s infinite;
+}
+.chat-typing span:nth-child(2) { animation-delay: 0.2s; }
+.chat-typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes blink {
+  0%, 80%, 100% { opacity: 0.3; transform: scale(1); }
+  40%            { opacity: 1;   transform: scale(1.2); }
+}
+
+.chat-foot {
+  padding: 10px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+}
+#chat-input {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  padding: 9px 12px;
+  font-family: var(--sans);
+  font-size: 0.84rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+#chat-input:focus { border-color: var(--accent); }
+#chat-send {
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+  width: 38px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+#chat-send:hover { background: #55ff33; }
+#chat-send svg { width: 16px; height: 16px; fill: #000; }
+
+/* ── FOOTER ──────────────────────────────────────────────────── */
+footer {
+  text-align: center;
+  padding: 48px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  border-top: 1px solid var(--border);
+}
+footer span { color: var(--accent); font-family: var(--mono); }
+
+/* ── RESPONSIVE ──────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .hero { grid-template-columns: 1fr; padding: 40px 20px 30px; }
+  .hero-cube-wrap { display: none; }
+  .layout, .step-nav { padding-left: 20px; padding-right: 20px; }
+  nav { padding: 0 16px; }
+  .demo-box { flex-direction: column; }
+}
+</style>
 </head>
 <body>
 
-    <header>
-        <div class="header-container">
-            <h1 id="main-title">SolveTheCube<span class="dot">.</span></h1>
-            <p id="sub-title">Lär dig lösa Rubiks kub med våra interaktiva guider och AI-stöd.</p>
-        </div>
-    </header>
+<nav>
+  <div class="nav-logo">SolveThe<span>Cube</span><span style="color:var(--muted)">.</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="switchGuide('3x3',this)">3×3</button>
+    <button class="nav-tab" onclick="switchGuide('2x2',this)">2×2</button>
+  </div>
+</nav>
 
-    <nav>
-        <button class="nav-btn active" id="btn-3x3" onclick="switchCube('3x3')">Rubiks Kub 3x3</button>
-        <button class="nav-btn" id="btn-2x2" onclick="switchCube('2x2')">Fickkub 2x2</button>
-    </nav>
-
-    <main class="container">
-        <section id="guide-3x3" class="guide-section">
-            <div class="step-card">
-                <h2>Steg 1: Det Vita Korset (Basen)</h2>
-                <p>Målet är att skapa ett vitt kors på undersidan av kuben. Det absolut viktigaste här är att kantbitarnas sidofärger matchar mittbitarna på sidorna (t.ex. röd/vit kantbit mot röd mittbit).</p>
-                
-                <div class="workspace">
-                    <div class="cube-container">
-                        <div class="cube-view" id="cube-3x3">
-                            <div class="face-grid top-face">
-                                <div class="st s-yellow"></div><div class="st s-yellow"></div><div class="st s-yellow"></div>
-                                <div class="st s-yellow"></div><div class="st s-yellow"></div><div class="st s-yellow"></div>
-                                <div class="st s-yellow"></div><div class="st s-yellow"></div><div class="st s-yellow"></div>
-                            </div>
-                            <div class="face-grid left-face">
-                                <div class="st s-blue"></div><div class="st s-blue"></div><div class="st s-blue"></div>
-                                <div class="st s-blue"></div><div class="st s-blue"></div><div class="st s-blue"></div>
-                                <div class="st s-blue"></div><div class="st s-blue"></div><div class="st s-blue"></div>
-                            </div>
-                            <div class="face-grid right-face">
-                                <div class="st s-red"></div><div class="st s-red"></div><div class="st s-red"></div>
-                                <div class="st s-red"></div><div class="st s-red"></div><div class="st s-red"></div>
-                                <div class="st s-red"></div><div class="st s-red"></div><div class="st s-red"></div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="control-panel">
-                        <div class="notation-display"><span id="notation-text-3x3">UTGÅNGSLÄGE</span></div>
-                        <div class="btn-group">
-                            <button class="action-btn btn-secondary" onclick="toggleAuto('3x3')">🔄 Auto-Spel</button>
-                            <button class="action-btn btn-primary" onclick="nextMove('3x3')">➡️ Nästa drag</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="instruction-box">
-                    <strong>Instruktion:</strong> <span id="explanation-3x3">Kuben visas i sitt startskick. Klicka på "Nästa drag" för att starta guiden.</span>
-                </div>
-            </div>
-        </section>
-
-        <section id="guide-2x2" class="guide-section hidden">
-            <div class="step-card">
-                <h2>Steg 1: Lösa första lagret (2x2)</h2>
-                <p>Placera de fyra vita hörnbitarna så att deras botten blir helt vit och deras sidofärger matchar varandra perfekt runt om.</p>
-                
-                <div class="workspace">
-                    <div class="cube-container">
-                        <div class="cube-view mini-cube" id="cube-2x2">
-                            <div class="face-grid top-face">
-                                <div class="st s-yellow"></div><div class="st s-yellow"></div>
-                                <div class="st s-yellow"></div><div class="st s-yellow"></div>
-                            </div>
-                            <div class="face-grid left-face">
-                                <div class="st s-blue"></div><div class="st s-blue"></div>
-                                <div class="st s-blue"></div><div class="st s-blue"></div>
-                            </div>
-                            <div class="face-grid right-face">
-                                <div class="st s-red"></div><div class="st s-red"></div>
-                                <div class="st s-red"></div><div class="st s-red"></div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="control-panel">
-                        <div class="notation-display"><span id="notation-text-2x2">UTGÅNGSLÄGE</span></div>
-                        <div class="btn-group">
-                            <button class="action-btn btn-secondary" onclick="toggleAuto('2x2')">🔄 Auto-Spel</button>
-                            <button class="action-btn btn-primary" onclick="nextMove('2x2')">➡️ Nästa drag</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="instruction-box">
-                    <strong>Instruktion:</strong> <span id="explanation-2x2">Följ stegen för att para ihop hörnen rätt.</span>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <div id="chat-launcher" onclick="toggleChat()">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+<header class="hero" id="top">
+  <div>
+    <div class="hero-tag">Interaktiv guide</div>
+    <h1>Lös Rubiks Kub<br><em>steg för steg.</em></h1>
+    <p class="hero-sub">Lär dig med nybörjarmetoden — lager för lager. Inga förkunskaper behövs, bara en kub och lite tålamod.</p>
+  </div>
+  <div class="hero-cube-wrap">
+    <div class="iso" style="transform:scale(1.35);">
+      <div class="f sz3 top3">
+        <div class="sticker c-Y"></div><div class="sticker c-Y"></div><div class="sticker c-Y"></div>
+        <div class="sticker c-Y"></div><div class="sticker c-Y"></div><div class="sticker c-Y"></div>
+        <div class="sticker c-Y"></div><div class="sticker c-Y"></div><div class="sticker c-Y"></div>
+      </div>
+      <div class="f sz3 lft3">
+        <div class="sticker c-B"></div><div class="sticker c-B"></div><div class="sticker c-B"></div>
+        <div class="sticker c-B"></div><div class="sticker c-B"></div><div class="sticker c-B"></div>
+        <div class="sticker c-B"></div><div class="sticker c-B"></div><div class="sticker c-B"></div>
+      </div>
+      <div class="f sz3 rgt3">
+        <div class="sticker c-R"></div><div class="sticker c-R"></div><div class="sticker c-R"></div>
+        <div class="sticker c-R"></div><div class="sticker c-R"></div><div class="sticker c-R"></div>
+        <div class="sticker c-R"></div><div class="sticker c-R"></div><div class="sticker c-R"></div>
+      </div>
     </div>
-    
-    <div id="chat-widget" class="chat-closed">
-        <div id="chat-header">
-            <div class="chat-header-title">🤖 SolveTheCube AI</div>
-            <div class="chat-close-btn" onclick="toggleChat()">×</div>
+  </div>
+</header>
+
+<div id="guide-3x3" class="layout active">
+
+  <nav class="step-nav" style="position:static;background:none;border:none;height:auto;justify-content:flex-start;">
+    <a href="#s1" class="step-pill">01 Vitt kors</a>
+    <a href="#s2" class="step-pill">02 Vita hörn</a>
+    <a href="#s3" class="step-pill">03 Andra lagret</a>
+    <a href="#s4" class="step-pill">04 Gult kors</a>
+    <a href="#s5" class="step-pill">05 Gula kanter</a>
+    <a href="#s6" class="step-pill">06 Hörn – placering</a>
+    <a href="#s7" class="step-pill">07 Hörn – orientering</a>
+  </nav>
+
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">NOTATION</div>
+      <div class="step-title">Förstå notationssystemet</div>
+    </div>
+    <p class="step-body">Varje drag beskrivs med en bokstav. <strong>U, D, L, R, F, B</strong> = Up, Down, Left, Right, Front, Back. En bokstav ensam = 90° medurs. Apostrof (<strong>R'</strong>) = 90° moturs. Siffran 2 (<strong>R2</strong>) = 180°.</p>
+    <div class="notation-grid">
+      <div class="notation-item"><span class="notation-key">U</span><span class="notation-val">Övre lager medurs</span></div>
+      <div class="notation-item"><span class="notation-key">U'</span><span class="notation-val">Övre lager moturs</span></div>
+      <div class="notation-item"><span class="notation-key">D</span><span class="notation-val">Nedre lager medurs</span></div>
+      <div class="notation-item"><span class="notation-key">L</span><span class="notation-val">Vänster medurs</span></div>
+      <div class="notation-item"><span class="notation-key">R</span><span class="notation-val">Höger medurs</span></div>
+      <div class="notation-item"><span class="notation-key">R'</span><span class="notation-val">Höger moturs</span></div>
+      <div class="notation-item"><span class="notation-key">F</span><span class="notation-val">Fram medurs</span></div>
+      <div class="notation-item"><span class="notation-key">B</span><span class="notation-val">Bak medurs</span></div>
+      <div class="notation-item"><span class="notation-key">R2</span><span class="notation-val">Höger 180°</span></div>
+    </div>
+    <div class="info-box"><strong>Tips:</strong> Medurs innebär alltid sett rakt mot sidan du vrider. Håll alltid kuben på samma sätt när du läser ett algoritm.</div>
+  </div>
+
+  <div class="step" id="s1">
+    <div class="step-header">
+      <div class="step-num">STEG 01</div>
+      <div class="step-title">Det Vita Korset</div>
+    </div>
+    <p class="step-body">Starta alltid med <strong>vit sida uppåt</strong>. Målet är ett vitt kors på toppen där kantbitarnas sidfärger matchar mittbitarna runt om. Mitten rör sig aldrig — den bestämmer alltid sidans färg.</p>
+
+    <div class="demo-box" id="demo-s1">
+      <div class="demo-cube-area">
+        <div class="demo-label">Nuvarande läge</div>
+        <div class="iso" id="cube-s1">
+          <div class="f sz3 top3">
+            <div class="sticker c-Y"></div><div class="sticker c-W"></div><div class="sticker c-Y"></div>
+            <div class="sticker c-W"></div><div class="sticker c-W"></div><div class="sticker c-W"></div>
+            <div class="sticker c-Y"></div><div class="sticker c-W"></div><div class="sticker c-Y"></div>
+          </div>
+          <div class="f sz3 lft3">
+            <div class="sticker c-B"></div><div class="sticker c-X"></div><div class="sticker c-B"></div>
+            <div class="sticker c-X"></div><div class="sticker c-B"></div><div class="sticker c-X"></div>
+            <div class="sticker c-B"></div><div class="sticker c-X"></div><div class="sticker c-B"></div>
+          </div>
+          <div class="f sz3 rgt3">
+            <div class="sticker c-R"></div><div class="sticker c-X"></div><div class="sticker c-R"></div>
+            <div class="sticker c-X"></div><div class="sticker c-R"></div><div class="sticker c-X"></div>
+            <div class="sticker c-R"></div><div class="sticker c-X"></div><div class="sticker c-R"></div>
+          </div>
         </div>
-        <div id="chat-body">
-            <div id="chat-logs">
-                <div class="msg bot">Hej! Jag är din assistent under redovisningen. Fråga mig vad som helst om hur man löser kuben eller vad beteckningarna betyder!</div>
-            </div>
-            <div id="chat-input-container">
-                <input type="text" id="chat-input" placeholder="Skriv din fråga här..." onkeypress="checkEnter(event)">
-                <button onclick="sendChatMessage()">Skicka</button>
-            </div>
+      </div>
+      <div class="demo-controls">
+        <div class="move-display" id="s1-move">— <span>Startläge</span></div>
+        <div class="move-counter" id="s1-counter">Drag 0 av 3</div>
+        <div class="demo-btn-row">
+          <button class="demo-btn demo-btn-secondary" onclick="resetDemo('s1')">↺ Återställ</button>
+          <button class="demo-btn demo-btn-primary" onclick="nextDemoMove('s1')">Nästa drag →</button>
         </div>
+        <div class="demo-instruction" id="s1-instr">Klicka "Nästa drag" för att se hur du löser ett vitt kors.</div>
+      </div>
     </div>
 
-    <footer>
-        <p>© 2026 SolveTheCube Guide • Skapad för redovisning</p>
-    </footer>
+    <p class="step-body">Det vita korset löser du med logik — det finns inget universalalgoritm. Vanliga situationer:</p>
+    <div class="algo-grid">
+      <div class="algo-card">
+        <div class="algo-cube-wrap">
+          <div class="iso" style="transform:scale(0.72);">
+            <div class="f sz3 top3"><div class="sticker c-Y"></div><div class="sticker c-Y"></div><div class="sticker c-Y"></div><div class="sticker c-Y"></div><div class="sticker c-W"></div><div class="sticker c-Y"></div><div class="sticker c-Y"></div><div class="sticker c-Y"></div><div class="sticker c-Y"></div></div>
+            <div class="f sz3 lft3"><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-B"></div><div class="sticker c-W"></div><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-X"></div></div>
+            <div class="f sz3 rgt3"><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-R"></div><div class="sticker c-R"></div><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-X"></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="algo-notation">R</div>
+          <div class="algo-desc">Vit kant pekar mot dig på mittlagret</div>
+        </div>
+      </div>
+      <div class="algo-card">
+        <div class="algo-cube-wrap">
+          <div class="iso" style="transform:scale(0.72);">
+            <div class="f sz3 top3"><div class="sticker c-Y"></div><div class="sticker c-Y"></div><div class="sticker c-Y"></div><div class="sticker c-Y"></div><div class="sticker c-W"></div><div class="sticker c-Y"></div><div class="sticker c-Y"></div><div class="sticker c-Y"></div><div class="sticker c-Y"></div></div>
+            <div class="f sz3 lft3"><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-B"></div><div class="sticker c-B"></div><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-X"></div></div>
+            <div class="f sz3 rgt3"><div class="sticker c-X"></div><div class="sticker c-W"></div><div class="sticker c-X"></div><div class="sticker c-R"></div><div class="sticker c-R"></div><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-X"></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="algo-notation">F R</div>
+          <div class="algo-desc">Vit kant pekar åt sidan på övre lagret</div>
+        </div>
+      </div>
+      <div class="algo-card">
+        <div class="algo-cube-wrap">
+          <div class="iso" style="transform:scale(0.72);">
+            <div class="f sz3 top3"><div class="sticker c-Y"></div><div class="sticker c-Y"></div><div class="sticker c-Y"></div><div class="sticker c-Y"></div><div class="sticker c-W"></div><div class="sticker c-Y"></div><div class="sticker c-Y"></div><div class="sticker c-Y"></div><div class="sticker c-Y"></div></div>
+            <div class="f sz3 lft3"><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-B"></div><div class="sticker c-R"></div><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-X"></div></div>
+            <div class="f sz3 rgt3"><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-R"></div><div class="sticker c-R"></div><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-X"></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="algo-notation">F R U</div>
+          <div class="algo-desc">Kantbit i fel position — rotera upp</div>
+        </div>
+      </div>
+    </div>
 
-    <script src="script.js"></script>
-</body>
-</html>
+    <div class="info-box">
+      <strong>Kom ihåg:</strong> Om kantbitarna sitter rätt på toppen men fel sidfärger kan du byta dem med: <strong style="font-family:var(--mono);color:var(--accent)">R' U' R U R'</strong>
+    </div>
+  </div>
+
+  <div class="step" id="s2">
+    <div class="step-header">
+      <div class="step-num">STEG 02</div>
+      <div class="step-title">De Vita Hörnen</div>
+    </div>
+    <p class="step-body">Nu sätter vi in de fyra vita hörnbitarna. En vit hörnbit ska placeras <strong>under sitt rätta hörn</strong> på nedre lagret, och sedan föras upp med rätt orientering. Tre fall beroende på hur vit sida pekar:</p>
+
+    <div class="algo-grid">
+      <div class="algo-card">
+        <div class="algo-cube-wrap">
+          <div class="iso" style="transform:scale(0.72);">
+            <div class="f sz3 top3"><div class="sticker c-W"></div><div class="sticker c-W"></div><div class="sticker c-W"></div><div class="sticker c-W"></div><div class="sticker c-W"></div><div class="sticker c-W"></div><div class="sticker c-X"></div><div class="sticker c-W"></div><div class="sticker c-X"></div></div>
+            <div class="f sz3 lft3"><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-B"></div><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-W"></div></div>
+            <div class="f sz3 rgt3"><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-R"></div><div class="sticker c-X"></div><div class="sticker c-B"></div><div class="sticker c-X"></div><div class="sticker c-X"></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="algo-notation">F D F'</div>
+          <div class="algo-desc">Vit sida pekar framåt</div>
+        </div>
+      </div>
+      <div class="algo-card">
+        <div class="algo-cube-wrap">
+          <div class="iso" style="transform:scale(0.72);">
+            <div class="f sz3 top3"><div class="sticker c-W"></div><div class="sticker c-W"></div><div class="sticker c-W"></div><div class="sticker c-W"></div><div class="sticker c-W"></div><div class="sticker c-W"></div><div class="sticker c-X"></div><div class="sticker c-W"></div><div class="sticker c-X"></div></div>
+            <div class="f sz3 lft3"><div class="sticker c-X"></div><div class="sticker c-X"></div><div class="sticker c-X"></div>
