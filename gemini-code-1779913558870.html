@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rubiks Kub - Interaktiv Guide</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1 id="main-title">Kubsidan: Bemästra Rubiks Kub 🧩</h1>
+        <p id="sub-title">Lär dig förstå kubens logik steg-för-steg med interaktiva 3D-visualiseringar.</p>
+        <button id="saturday-btn" onclick="toggleSaturday()">Aktivera Lördagsläge! 🎉</button>
+    </header>
+
+    <nav>
+        <button class="nav-btn active" id="btn-3x3" onclick="switchCube('3x3')">Rubiks Kub 3x3</button>
+        <button class="nav-btn" id="btn-2x2" onclick="switchCube('2x2')">Fickkub 2x2</button>
+    </nav>
+
+    <main class="container">
+        
+        <section id="guide-3x3" class="guide-section">
+            <div class="step-card">
+                <span class="step-badge">Steg 1 av 4</span>
+                <h2>Det Vita Korset (Grunden)</h2>
+                <p>Bygg inte på måfå! Målet är att skapa ett vitt kors på botten. Det kritiska här är att kantbitarnas sidofärger <strong>måste</strong> matcha mittbitarna på sidorna. Tänk på mittbitarna som fasta ankare.</p>
+                
+                <div class="workspace">
+                    <div class="scene">
+                        <div class="cube3d" id="cube-3x3">
+                            <div class="face front">F</div>
+                            <div class="face back">B</div>
+                            <div class="face top">U</div>
+                            <div class="face bottom">D</div>
+                            <div class="face left">L</div>
+                            <div class="face right">R</div>
+                        </div>
+                    </div>
+                    
+                    <div class="control-panel">
+                        <div class="notation-display">Aktuellt drag: <span id="notation-text-3x3">START</span></div>
+                        <div class="btn-group">
+                            <button class="action-btn" onclick="toggleAuto('3x3')">▶️ Auto / Pausa</button>
+                            <button class="action-btn" onclick="nextMove('3x3')">➡️ Nästa rotation</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="instruction-box">
+                    <strong>Pedagogisk förklaring:</strong> <span id="explanation-3x3">Kuben är i sitt grundläge. Tryck på knapparna för att se hur lagren flyttar sig i sekvensen.</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="guide-2x2" class="guide-section hidden">
+            <div class="step-card">
+                <span class="step-badge">Steg 1 av 3</span>
+                <h2>Det Första Lagret (2x2)</h2>
+                <p>En 2x2 har inga fasta mittbitar. Välj ett hörn med vitt på (t.ex. Vit/Blå/Röd) och använd det som startpunkt. Nästa vita bit måste matcha sidofärgen på din startbit.</p>
+                
+                <div class="workspace">
+                    <div class="scene">
+                        <div class="cube3d mini-cube" id="cube-2x2">
+                            <div class="face front">F</div>
+                            <div class="face back">B</div>
+                            <div class="face top">U</div>
+                            <div class="face bottom">D</div>
+                            <div class="face left">L</div>
+                            <div class="face right">R</div>
+                        </div>
+                    </div>
+                    
+                    <div class="control-panel">
+                        <div class="notation-display">Aktuellt drag: <span id="notation-text-2x2">START</span></div>
+                        <div class="btn-group">
+                            <button class="action-btn" onclick="toggleAuto('2x2')">▶️ Auto / Pausa</button>
+                            <button class="action-btn" onclick="nextMove('2x2')">➡️ Nästa rotation</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="instruction-box">
+                    <strong>Pedagogisk förklaring:</strong> <span id="explanation-2x2">Här fokuserar vi enbart på hörnen. Se hur algoritmen flyttar bitarna på plats.</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="chat-widget">
+        <div id="chat-header" onclick="toggleChat()">Kubb-AI Assistent 🤖 <span>▲</span></div>
+        <div id="chat-body">
+            <div id="chat-logs">
+                <div class="msg bot">Hej! Imorgon på presentationen kan du visa upp mig. Fråga mig om "korset", "notationer" eller vad "R" betyder!</div>
+            </div>
+            <div id="chat-input-container">
+                <input type="text" id="chat-input" placeholder="Ställ en fråga till kub-boten..." onkeypress="checkEnter(event)">
+                <button onclick="sendChatMessage()">Skicka</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 Interaktiv Kubguide • Redo för presentation</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
