@@ -3,203 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SolveTheCube - Interaktiv 3D Guide</title>
-    <style>
-        /* MODERN CLEAN DESIGN (Inspirerad av solvethecube.com) */
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-color: #f8fafc;
-            --accent-color: #38bdf8;
-            --nav-bg: #334155;
-            --btn-hover: #0ea5e9;
-        }
+    <title>SolveTheCube - Interaktiv Guide</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-        body.saturday {
-            --bg-color: #fdf2f8;
-            --card-bg: #fff1f2;
-            --text-color: #4c0519;
-            --accent-color: #db2777;
-            --nav-bg: #fbcfe8;
-            --btn-hover: #be185d;
-        }
+    <header>
+        <h1 id="main-title">SolveTheCube 🧩</h1>
+        <p id="sub-title">Interaktiva modeller och smart AI-hjälp för att bemästra kuben.</p>
+        <button id="saturday-btn" onclick="toggleSaturday()">Aktivera Lördagsläge! 🎉</button>
+    </header>
 
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+    <nav>
+        <button class="nav-btn active" id="btn-3x3" onclick="switchCube('3x3')">Rubiks Kub 3x3</button>
+        <button class="nav-btn" id="btn-2x2" onclick="switchCube('2x2')">Fickkub 2x2</button>
+    </nav>
 
-        header {
-            text-align: center;
-            padding: 2rem 1rem 1.5rem;
-            background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 100%);
-        }
+    <main class="container">
+        <section id="guide-3x3" class="guide-section">
+            <div class="step-card">
+                <h2>Steg 1: Det Vita Korset (Basen)</h2>
+                <p>Skapa ett vitt kors på kubens undersida. Kom ihåg att kantbitarnas sidofärger absolut måste ligga i linje med mittbitarna.</p>
+                
+                <div class="workspace">
+                    <div class="cube-container">
+                        <div class="cube-view" id="cube-3x3">
+                            <div class="face-grid top-face">
+                                <div class="st s-yellow"></div><div class="st s-yellow"></div><div class="st s-yellow"></div>
+                                <div class="st s-yellow"></div><div class="st s-yellow"></div><div class="st s-yellow"></div>
+                                <div class="st s-yellow"></div><div class="st s-yellow"></div><div class="st s-yellow"></div>
+                            </div>
+                            <div class="face-grid left-face">
+                                <div class="st s-blue"></div><div class="st s-blue"></div><div class="st s-blue"></div>
+                                <div class="st s-blue"></div><div class="st s-blue"></div><div class="st s-blue"></div>
+                                <div class="st s-blue"></div><div class="st s-blue"></div><div class="st s-blue"></div>
+                            </div>
+                            <div class="face-grid right-face">
+                                <div class="st s-red"></div><div class="st s-red"></div><div class="st s-red"></div>
+                                <div class="st s-red"></div><div class="st s-red"></div><div class="st s-red"></div>
+                                <div class="st s-red"></div><div class="st s-red"></div><div class="st s-red"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="control-panel">
+                        <div class="notation-display"><span id="notation-text-3x3">UTGÅNGSLÄGE</span></div>
+                        <div class="btn-group">
+                            <button class="action-btn" onclick="toggleAuto('3x3')">🔄 Auto-Spel</button>
+                            <button class="action-btn" onclick="nextMove('3x3')">➡️ Nästa drag</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="instruction-box">
+                    <strong>Steganalys:</strong> <span id="explanation-3x3">Kuben visas i sitt grundskick. Starta sekvensen för att visualisera dragen.</span>
+                </div>
+            </div>
+        </section>
 
-        h1 {
-            font-size: 2.5rem;
-            margin: 0 0 10px;
-            font-weight: 800;
-            letter-spacing: -0.05em;
-        }
+        <section id="guide-2x2" class="guide-section hidden">
+            <div class="step-card">
+                <h2>Steg 1: Lösa första lagret (2x2)</h2>
+                <p>Placera de fyra vita hörnbitarna så att deras botten blir vit och deras sidofärger matchar varandra perfekt.</p>
+                
+                <div class="workspace">
+                    <div class="cube-container">
+                        <div class="cube-view mini-cube" id="cube-2x2">
+                            <div class="face-grid top-face">
+                                <div class="st s-yellow"></div><div class="st s-yellow"></div>
+                                <div class="st s-yellow"></div><div class="st s-yellow"></div>
+                            </div>
+                            <div class="face-grid left-face">
+                                <div class="st s-blue"></div><div class="st s-blue"></div>
+                                <div class="st s-blue"></div><div class="st s-blue"></div>
+                            </div>
+                            <div class="face-grid right-face">
+                                <div class="st s-red"></div><div class="st s-red"></div>
+                                <div class="st s-red"></div><div class="st s-red"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="control-panel">
+                        <div class="notation-display"><span id="notation-text-2x2">UTGÅNGSLÄGE</span></div>
+                        <div class="btn-group">
+                            <button class="action-btn" onclick="toggleAuto('2x2')">🔄 Auto-Spel</button>
+                            <button class="action-btn" onclick="nextMove('2x2')">➡️ Nästa drag</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="instruction-box">
+                    <strong>Steganalys:</strong> <span id="explanation-2x2">Algoritmen förbereds. Följ vridningarna på skärmen.</span>
+                </div>
+            </div>
+        </section>
+    </main>
 
-        #saturday-btn {
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-            transition: transform 0.2s, background-color 0.2s;
-        }
-        #saturday-btn:hover {
-            transform: scale(1.05);
-            background-color: var(--btn-hover);
-        }
+    <div id="chat-launcher" onclick="toggleChat()">💬</div>
+    
+    <div id="chat-widget" class="chat-closed">
+        <div id="chat-header">🤖 Kubb-AI Assistent</div>
+        <div id="chat-body">
+            <div id="chat-logs">
+                <div class="msg bot">Hej! Jag är din assistent under presentationen. Fråga mig om "korset", "notationer" eller "lördag"!</div>
+            </div>
+            <div id="chat-input-container">
+                <input type="text" id="chat-input" placeholder="Fråga något..." onkeypress="checkEnter(event)">
+                <button onclick="sendChatMessage()">Skicka</button>
+            </div>
+        </div>
+    </div>
 
-        nav {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            background-color: var(--nav-bg);
-            padding: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
+    <footer>
+        <p>© 2026 SolveTheCube Klon • Klar för presentation</p>
+    </footer>
 
-        .nav-btn {
-            background: transparent;
-            border: 2px solid transparent;
-            color: var(--text-color);
-            padding: 10px 24px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            border-radius: 12px;
-            transition: all 0.2s;
-            opacity: 0.8;
-        }
-        .nav-btn.active {
-            background-color: var(--card-bg);
-            border-color: var(--accent-color);
-            opacity: 1;
-        }
-
-        .container {
-            max-width: 750px;
-            margin: 30px auto;
-            padding: 0 20px 120px;
-        }
-
-        .step-card {
-            background-color: var(--card-bg);
-            border-radius: 24px;
-            padding: 30px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        h2 { font-size: 1.6rem; margin-top: 10px; font-weight: 700; }
-
-        .workspace {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 35px;
-            margin: 35px 0;
-            background: rgba(0, 0, 0, 0.25);
-            padding: 40px 20px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        /* FIXAD 3D SCEN OCH PLACERING */
-        .scene {
-            width: 150px;
-            height: 150px;
-            perspective: 600px;
-            margin: 20px auto;
-        }
-
-        .cube3d {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            transform: rotateX(-25deg) rotateY(45deg);
-            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-
-        .face {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 150px;
-            height: 150px;
-            border: 4px solid #0f172a;
-            box-sizing: border-box;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(3, 1fr);
-            gap: 2px;
-            background: #0f172a;
-            border-radius: 8px;
-            backface-visibility: cubic-bezier(0,0,0,0);
-        }
-
-        .sticker {
-            width: 100%;
-            height: 100%;
-            border-radius: 3px;
-        }
-
-        /* SÄKRAD 3D POSITIONERING UTAN ATT TÄCKA SKÄRMEN */
-        .front  { transform: rotateY(0deg) translateZ(75px); }
-        .back   { transform: rotateY(180deg) translateZ(75px); }
-        .top    { transform: rotateX(90deg) translateZ(75px); }
-        .bottom { transform: rotateX(-90deg) translateZ(75px); }
-        .left   { transform: rotateY(-90deg) translateZ(75px); }
-        .right  { transform: rotateY(90deg) translateZ(75px); }
-
-        .s-red { background-color: #dc2626; }
-        .s-blue { background-color: #2563eb; }
-        .s-orange { background-color: #ea580c; }
-        .s-green { background-color: #16a34a; }
-        .s-white { background-color: #ffffff; }
-        .s-yellow { background-color: #eab308; }
-
-        .mini-cube .face {
-            grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-        }
-
-        .control-panel { width: 100%; max-width: 400px; }
-
-        .notation-display {
-            font-size: 1.3rem;
-            font-family: monospace;
-            font-weight: 700;
-            margin-bottom: 20px;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid var(--accent-color);
-            text-align: center;
-        }
-
-        .btn-group { display: flex; gap: 12px; justify-content: center; }
-
-        .action-btn {
-            background-color: var(--nav-bg);
-            color: var(--text-color);
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 12px 20px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
+    <script src="script.js"></script>
+</body>
+</html>
