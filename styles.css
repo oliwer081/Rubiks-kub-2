@@ -1,197 +1,144 @@
-:root {
-    --bg-color: #f4f7f6;
-    --text-color: #333;
-    --accent-color: #2080f0;
-    --card-bg: #ffffff;
-    --header-bg: #1e293b;
-    --header-text: #ffffff;
+// Fliksystem
+function switchCube(cubeType) {
+    const guide3x3 = document.getElementById('guide-3x3');
+    const guide2x2 = document.getElementById('guide-2x2');
+    const buttons = document.querySelectorAll('.nav-btn');
+
+    buttons.forEach(btn => btn.classList.remove('active'));
+
+    if (cubeType === '3x3') {
+        guide3x3.classList.remove('hidden');
+        guide2x2.classList.add('hidden');
+        buttons[0].classList.add('active');
+    } else {
+        guide2x2.classList.remove('hidden');
+        guide3x3.classList.add('hidden');
+        buttons[1].classList.add('active');
+    }
 }
 
-body.saturday {
-    --bg-color: #ffe6f2;
-    --text-color: #4a004a;
-    --accent-color: #ff007f;
-    --card-bg: #fff0f5;
-    --header-bg: #990066;
-    --header-text: #ffff00;
+// Lördagsläge
+function toggleSaturday() {
+    const body = document.body;
+    const title = document.getElementById('main-title');
+    const subtitle = document.getElementById('sub-title');
+    const btn = document.getElementById('saturday-btn');
+
+    body.classList.toggle('saturday');
+
+    if (body.classList.contains('saturday')) {
+        title.innerHTML = "LÖRDAGSKUBEN! 🍬🎉";
+        subtitle.innerHTML = "Lördagstema aktiverat! Samma smarta logik, men med mycket mer feststämning.";
+        btn.innerHTML = "Tillbaka till vardagen ☕";
+    } else {
+        title.innerHTML = "Lär dig lösa Rubiks Kub 🧩";
+        subtitle.innerHTML = "Pedagogiska guider steg-för-steg, med interaktiva 3D-block och chatbot-hjälp!";
+        btn.innerHTML = "Ändra till lördag! 🎉";
+    }
 }
 
-body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    margin: 0;
-    padding: 0;
-    transition: all 0.3s ease;
+// CHATBOT LOGIK
+function handleChat() {
+    const input = document.getElementById('chat-input');
+    const msgBox = document.getElementById('chat-messages');
+    const text = input.value.trim();
+    
+    if(!text) return;
+
+    // Lägg till användarens text
+    msgBox.innerHTML += `<div class="user-msg">${text}</div>`;
+    input.value = '';
+
+    // Generera bot-svar
+    let reply = "Jag är bara en kub-robot, men testa att fråga om 'korset' eller 'lördag'!";
+    const lowText = text.toLowerCase();
+
+    if(lowText.includes('korset') || lowText.includes('steg 1')) {
+        reply = "För det vita korset ska du matcha kantbitarnas sidofärg med rätt mittbit (t.ex röd mot röd).";
+    } else if (lowText.includes('notation') || lowText.includes('drag')) {
+        reply = "R betyder Höger medurs, R' betyder Höger moturs. U är övre lagret, F är framsidan!";
+    } else if (lowText.includes('lördag')) {
+        reply = "Klicka på knappen högst upp på sidan för att starta lördagsgodis-temat! 🍬";
+    }
+
+    setTimeout(() => {
+        msgBox.innerHTML += `<div class="bot-msg">${reply}</div>`;
+        msgBox.scrollTop = msgBox.scrollHeight;
+    }, 400);
 }
 
-header {
-    background-color: var(--header-bg);
-    color: var(--header-text);
-    text-align: center;
-    padding: 2rem 1rem;
+// 3D KUBER (Three.js - Enkel simulering av rotationer)
+const moves3x3 = ["F", "R", "U", "R'", "U'", "F'"];
+const moves2x2 = ["R", "U", "R'"];
+let index3x3 = 0;
+let index2x2 = 0;
+let auto3x3 = null;
+let auto2x2 = null;
+
+// Skapa scener för 3D
+function setupCube(containerId, is3x3) {
+    const container = document.getElementById(containerId);
+    if (!container) return null;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(250, 250);
+    container.appendChild(renderer.domElement);
+
+    // Skapa en kub-formad grupp av mindre block
+    const group = new THREE.Group();
+    const size = is3x3 ? 3 : 2;
+    
+    for(let x=0; x<size; x++) {
+        for(let y=0; y<size; y++) {
+            for(let z=0; z<size; z++) {
+                const geom = new THREE.BoxGeometry(0.9, 0.9, 0.9);
+                // Vi ger kuben lite grundfärg
+                const mat = new THREE.MeshBasicMaterial({ color: 0x2080f0 });
+                const mesh = new THREE.Mesh(geom, mat);
+                mesh.position.set(x - size/2 + 0.5, y - size/2 + 0.5, z - size/2 + 0.5);
+                group.add(mesh);
+            }
+        }
+    }
+    
+    scene.add(group);
+    camera.position.z = 5;
+
+    function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+    }
+    animate();
+
+    return group;
 }
 
-#saturday-btn {
-    background-color: var(--accent-color);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 20px;
-    cursor: pointer;
-    margin-top: 10px;
+// Starta 3D-miljön
+const visual3x3 = setupCube('cube3x3', true);
+const visual2x2 = setupCube('cube2x2', false);
+
+// Hantera klick och automatiska drag
+function stepMove(type) {
+    if(type === '3x3' && visual3x3) {
+        document.getElementById('notation-3x3').innerText = moves3x3[index3x3];
+        visual3x3.rotation.y += 0.5; // Simulerar en vridning
+        visual3x3.rotation.x += 0.2;
+        index3x3 = (index3x3 + 1) % moves3x3.length;
+    } else if(type === '2x2' && visual2x2) {
+        document.getElementById('notation-2x2').innerText = moves2x2[index2x2];
+        visual2x2.rotation.x += 0.5;
+        index2x2 = (index2x2 + 1) % moves2x2.length;
+    }
 }
 
-nav {
-    display: flex;
-    justify-content: center;
-    background-color: #cbd5e1;
+function toggleAuto(type) {
+    if(type === '3x3') {
+        if(auto3x3) { clearInterval(auto3x3); auto3x3 = null; }
+        else { auto3x3 = setInterval(() => stepMove('3x3'), 1000); }
+    } else {
+        if(auto2x2) { clearInterval(auto2x2); auto2x2 = null; }
+        else { auto2x2 = setInterval(() => stepMove('2x2'), 1000); }
+    }
 }
-
-body.saturday nav { background-color: #ffb3d9; }
-
-.nav-btn {
-    background: none;
-    border: none;
-    padding: 15px 30px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-.nav-btn.active {
-    background-color: var(--bg-color);
-    color: var(--accent-color);
-    border-bottom: 3px solid var(--accent-color);
-}
-
-.container {
-    max-width: 800px;
-    margin: 30px auto;
-    padding: 0 20px;
-    padding-bottom: 100px; /* Plats för chatten */
-}
-
-.step {
-    background-color: var(--card-bg);
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    border-left: 5px solid var(--accent-color);
-}
-
-/* 3D-Modellens rader */
-.cube-area {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: #000;
-    padding: 15px;
-    border-radius: 8px;
-    margin: 15px 0;
-}
-
-.cube-container {
-    width: 250px;
-    height: 250px;
-}
-
-.controls {
-    text-align: center;
-    margin-top: 10px;
-}
-
-.notation-box {
-    color: #fff;
-    margin-bottom: 8px;
-    font-family: monospace;
-    font-size: 1.2rem;
-}
-
-.controls button {
-    background: var(--accent-color);
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    margin: 0 5px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.tip {
-    background-color: #e2e8f0;
-    padding: 10px;
-    border-radius: 4px;
-    margin-top: 10px;
-}
-
-body.saturday .tip { background-color: #ffccf2; }
-
-.hidden { display: none; }
-
-/* Chatbot stilar */
-#chat-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 280px;
-    height: 350px;
-    background: white;
-    border: 2px solid var(--accent-color);
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    z-index: 1000;
-}
-
-#chat-header {
-    background: var(--accent-color);
-    color: white;
-    padding: 10px;
-    font-weight: bold;
-    text-align: center;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-}
-
-#chat-messages {
-    flex: 1;
-    padding: 10px;
-    overflow-y: auto;
-    font-size: 0.9rem;
-}
-
-.bot-msg, .user-msg {
-    margin-bottom: 8px;
-    padding: 8px;
-    border-radius: 5px;
-}
-
-.bot-msg { background: #e2e8f0; align-self: flex-start; }
-.user-msg { background: #dbeafe; text-align: right; align-self: flex-end; }
-
-#chat-input-area {
-    display: flex;
-    border-top: 1px solid #ccc;
-}
-
-#chat-input {
-    flex: 1;
-    border: none;
-    padding: 10px;
-    outline: none;
-}
-
-#chat-input-area button {
-    background: var(--accent-color);
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-}
-
-footer { text-align: center; padding: 20px; color: #64748b; }
