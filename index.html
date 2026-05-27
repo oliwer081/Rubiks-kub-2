@@ -9,9 +9,10 @@
 <body>
 
     <header>
-        <h1 id="main-title">SolveTheCube 🧩</h1>
-        <p id="sub-title">Interaktiva modeller och smart AI-hjälp för att bemästra kuben.</p>
-        <button id="saturday-btn" onclick="toggleSaturday()">Aktivera Lördagsläge! 🎉</button>
+        <div class="header-container">
+            <h1 id="main-title">SolveTheCube<span class="dot">.</span></h1>
+            <p id="sub-title">Lär dig lösa Rubiks kub med våra interaktiva guider och AI-stöd.</p>
+        </div>
     </header>
 
     <nav>
@@ -23,7 +24,7 @@
         <section id="guide-3x3" class="guide-section">
             <div class="step-card">
                 <h2>Steg 1: Det Vita Korset (Basen)</h2>
-                <p>Skapa ett vitt kors på kubens undersida. Kom ihåg att kantbitarnas sidofärger absolut måste ligga i linje med mittbitarna.</p>
+                <p>Målet är att skapa ett vitt kors på undersidan av kuben. Det absolut viktigaste här är att kantbitarnas sidofärger matchar mittbitarna på sidorna (t.ex. röd/vit kantbit mot röd mittbit).</p>
                 
                 <div class="workspace">
                     <div class="cube-container">
@@ -49,13 +50,13 @@
                     <div class="control-panel">
                         <div class="notation-display"><span id="notation-text-3x3">UTGÅNGSLÄGE</span></div>
                         <div class="btn-group">
-                            <button class="action-btn" onclick="toggleAuto('3x3')">🔄 Auto-Spel</button>
-                            <button class="action-btn" onclick="nextMove('3x3')">➡️ Nästa drag</button>
+                            <button class="action-btn btn-secondary" onclick="toggleAuto('3x3')">🔄 Auto-Spel</button>
+                            <button class="action-btn btn-primary" onclick="nextMove('3x3')">➡️ Nästa drag</button>
                         </div>
                     </div>
                 </div>
                 <div class="instruction-box">
-                    <strong>Steganalys:</strong> <span id="explanation-3x3">Kuben visas i sitt grundskick. Starta sekvensen för att visualisera dragen.</span>
+                    <strong>Instruktion:</strong> <span id="explanation-3x3">Kuben visas i sitt startskick. Klicka på "Nästa drag" för att starta guiden.</span>
                 </div>
             </div>
         </section>
@@ -63,7 +64,7 @@
         <section id="guide-2x2" class="guide-section hidden">
             <div class="step-card">
                 <h2>Steg 1: Lösa första lagret (2x2)</h2>
-                <p>Placera de fyra vita hörnbitarna så att deras botten blir vit och deras sidofärger matchar varandra perfekt.</p>
+                <p>Placera de fyra vita hörnbitarna så att deras botten blir helt vit och deras sidofärger matchar varandra perfekt runt om.</p>
                 
                 <div class="workspace">
                     <div class="cube-container">
@@ -86,35 +87,40 @@
                     <div class="control-panel">
                         <div class="notation-display"><span id="notation-text-2x2">UTGÅNGSLÄGE</span></div>
                         <div class="btn-group">
-                            <button class="action-btn" onclick="toggleAuto('2x2')">🔄 Auto-Spel</button>
-                            <button class="action-btn" onclick="nextMove('2x2')">➡️ Nästa drag</button>
+                            <button class="action-btn btn-secondary" onclick="toggleAuto('2x2')">🔄 Auto-Spel</button>
+                            <button class="action-btn btn-primary" onclick="nextMove('2x2')">➡️ Nästa drag</button>
                         </div>
                     </div>
                 </div>
                 <div class="instruction-box">
-                    <strong>Steganalys:</strong> <span id="explanation-2x2">Algoritmen förbereds. Följ vridningarna på skärmen.</span>
+                    <strong>Instruktion:</strong> <span id="explanation-2x2">Följ stegen för att para ihop hörnen rätt.</span>
                 </div>
             </div>
         </section>
     </main>
 
-    <div id="chat-launcher" onclick="toggleChat()">💬</div>
+    <div id="chat-launcher" onclick="toggleChat()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+    </div>
     
     <div id="chat-widget" class="chat-closed">
-        <div id="chat-header">🤖 Kubb-AI Assistent</div>
+        <div id="chat-header">
+            <div class="chat-header-title">🤖 SolveTheCube AI</div>
+            <div class="chat-close-btn" onclick="toggleChat()">×</div>
+        </div>
         <div id="chat-body">
             <div id="chat-logs">
-                <div class="msg bot">Hej! Jag är din assistent under presentationen. Fråga mig om "korset", "notationer" eller "lördag"!</div>
+                <div class="msg bot">Hej! Jag är din assistent under redovisningen. Fråga mig vad som helst om hur man löser kuben eller vad beteckningarna betyder!</div>
             </div>
             <div id="chat-input-container">
-                <input type="text" id="chat-input" placeholder="Fråga något..." onkeypress="checkEnter(event)">
+                <input type="text" id="chat-input" placeholder="Skriv din fråga här..." onkeypress="checkEnter(event)">
                 <button onclick="sendChatMessage()">Skicka</button>
             </div>
         </div>
     </div>
 
     <footer>
-        <p>© 2026 SolveTheCube Klon • Klar för presentation</p>
+        <p>© 2026 SolveTheCube Guide • Skapad för redovisning</p>
     </footer>
 
     <script src="script.js"></script>
