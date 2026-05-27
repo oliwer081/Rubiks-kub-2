@@ -7,7 +7,6 @@
     --header-text: #ffffff;
 }
 
-/* Lördagstema (Lördagsgodis & Fest) */
 body.saturday {
     --bg-color: #ffe6f2;
     --text-color: #4a004a;
@@ -18,7 +17,7 @@ body.saturday {
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Arial, sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
     margin: 0;
@@ -31,7 +30,6 @@ header {
     color: var(--header-text);
     text-align: center;
     padding: 2rem 1rem;
-    transition: all 0.3s ease;
 }
 
 #saturday-btn {
@@ -44,11 +42,6 @@ header {
     border-radius: 20px;
     cursor: pointer;
     margin-top: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-#saturday-btn:hover {
-    transform: scale(1.05);
 }
 
 nav {
@@ -57,9 +50,7 @@ nav {
     background-color: #cbd5e1;
 }
 
-body.saturday nav {
-    background-color: #ffb3d9;
-}
+body.saturday nav { background-color: #ffb3d9; }
 
 .nav-btn {
     background: none;
@@ -68,7 +59,6 @@ body.saturday nav {
     font-size: 1.1rem;
     cursor: pointer;
     font-weight: 600;
-    color: #475569;
 }
 
 .nav-btn.active {
@@ -81,10 +71,7 @@ body.saturday nav {
     max-width: 800px;
     margin: 30px auto;
     padding: 0 20px;
-}
-
-.guide-section {
-    animation: fadeIn 0.5s ease;
+    padding-bottom: 100px; /* Plats för chatten */
 }
 
 .step {
@@ -96,30 +83,115 @@ body.saturday nav {
     border-left: 5px solid var(--accent-color);
 }
 
+/* 3D-Modellens rader */
+.cube-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #000;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+}
+
+.cube-container {
+    width: 250px;
+    height: 250px;
+}
+
+.controls {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.notation-box {
+    color: #fff;
+    margin-bottom: 8px;
+    font-family: monospace;
+    font-size: 1.2rem;
+}
+
+.controls button {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
 .tip {
     background-color: #e2e8f0;
     padding: 10px;
     border-radius: 4px;
     margin-top: 10px;
-    font-size: 0.95rem;
 }
 
-body.saturday .tip {
-    background-color: #ffccf2;
+body.saturday .tip { background-color: #ffccf2; }
+
+.hidden { display: none; }
+
+/* Chatbot stilar */
+#chat-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 280px;
+    height: 350px;
+    background: white;
+    border: 2px solid var(--accent-color);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    z-index: 1000;
 }
 
-.hidden {
-    display: none;
-}
-
-footer {
+#chat-header {
+    background: var(--accent-color);
+    color: white;
+    padding: 10px;
+    font-weight: bold;
     text-align: center;
-    padding: 20px;
-    font-size: 0.9rem;
-    color: #64748b;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+#chat-messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    font-size: 0.9rem;
 }
+
+.bot-msg, .user-msg {
+    margin-bottom: 8px;
+    padding: 8px;
+    border-radius: 5px;
+}
+
+.bot-msg { background: #e2e8f0; align-self: flex-start; }
+.user-msg { background: #dbeafe; text-align: right; align-self: flex-end; }
+
+#chat-input-area {
+    display: flex;
+    border-top: 1px solid #ccc;
+}
+
+#chat-input {
+    flex: 1;
+    border: none;
+    padding: 10px;
+    outline: none;
+}
+
+#chat-input-area button {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+footer { text-align: center; padding: 20px; color: #64748b; }
