@@ -1,0 +1,60 @@
+// ... (tidigare funktioner: switchCube, toggleSaturday)
+
+// 3D-modellering med Three.js (ett exempel för 3x3 steg 1)
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(300, 300);
+document.getElementById('cube-container-3x3-step1').appendChild(renderer.domElement);
+
+// Skapa kuben
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+
+camera.position.z = 5;
+
+// Funktion för att rendera scenen
+function animate() {
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+}
+animate();
+
+// ... (funktioner för playMoves och nextMove: dessa kräver mer komplex Three.js-logik för att animera dragen)
+
+// Chatbot-logik (enkelt exempel)
+const chatMessages = document.getElementById('chat-messages');
+const chatInput = document.getElementById('chat-input');
+const chatSubmit = document.getElementById('chat-submit');
+
+chatSubmit.addEventListener('click', sendMessage);
+
+function sendMessage() {
+    const message = chatInput.value;
+    if (message.trim() !== '') {
+        const userMessage = document.createElement('div');
+        userMessage.classList.add('user-message');
+        userMessage.textContent = message;
+        chatMessages.appendChild(userMessage);
+
+        const botResponse = document.createElement('div');
+        botResponse.classList.add('bot-message');
+        botResponse.textContent = generateResponse(message);
+        chatMessages.appendChild(botResponse);
+
+        chatInput.value = '';
+    }
+}
+
+function generateResponse(message) {
+    // Enkel logik för att svara på vanliga frågor
+    if (message.toLowerCase().includes('hvitt kors')) {
+        return 'Det vita korset är det första steget! Fokusera på att matcha sidofärgerna med mittbitarna.';
+    } else if (message.toLowerCase().includes('gult kors')) {
+        return 'Det gula korset kommer senare! Fortsätt med dina steg, du kommer dit snart!';
+    } else {
+        return 'Jag förstår inte riktigt. Försök ställa din fråga på ett annat sätt!';
+    }
+}
