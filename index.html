@@ -1,16 +1,17 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="sv">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kubsidan - Lär dig lösa Rubiks Kub</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
     <header>
         <h1 id="main-title">Lär dig lösa Rubiks Kub 🧩</h1>
-        <p id="sub-title">Pedagogiska guider steg-för-steg, helt utan att bara memorera blinda drag!</p>
+        <p id="sub-title">Pedagogiska guider steg-för-steg, med 3D-modeller och chatbot-hjälp!</p>
         <button id="saturday-btn" onclick="toggleSaturday()">Ändra till lördag! 🎉</button>
     </header>
 
@@ -27,24 +28,19 @@
             <div class="step">
                 <h3>Steg 1: Det vita korset (Grunden)</h3>
                 <p>Målet är att skapa ett vitt kors på undersidan. Det viktiga här är att kantbitarnas sidofärger måste matcha mittbitarna på sidorna (t.ex. röd/vit kantbit mot röd mittbit).</p>
+                <div class="cube-container" id="cube-container-3x3-step1">
+                    </div>
+                <div class="notation-display">
+                    <p>Notationer för detta steg: F R U R' U' F'</p>
+                </div>
+                <div class="control-panel">
+                    <button onclick="playMoves('3x3-step1')">Spela upp drag (automatiskt)</button>
+                    <button onclick="nextMove('3x3-step1')">Nästa drag (manuellt)</button>
+                </div>
                 <div class="tip">💡 <strong>Tänk på:</strong> Mittbitarna rör sig aldrig. De bestämmer vilken färg sidan ska ha!</div>
             </div>
 
-            <div class="step">
-                <h3>Steg 2: Det första lagret (Hörnen)</h3>
-                <p>Nu ska vi sätta de fyra vita hörnbitarna på rätt plats. Hitta ett hörn med vitt på, placera det ovanför där det ska ner, och skicka ner det genom att öppna sidan, sätta i biten och stänga sidan.</p>
-            </div>
-
-            <div class="step">
-                <h3>Steg 3: Det andra lagret (Mellanvåningen)</h3>
-                <p>Vänd på kuben så det vita lagret är nedåt. Nu ska vi sätta dit kantbitarna på mittenlagret. Vi gömmer biten åt motsatt håll dit den ska, lyfter upp hörnet den ska bo med, parar ihop dem och sätter ner båda tillsammans.</p>
-            </div>
-
-            <div class="step">
-                <h3>Steg 4: Det gula korset (Taket påbörjas)</h3>
-                <p>Nu ska vi göra ett gult kors på ovansidan utan att förstöra det vi redan byggt. Här använder vi en sekvens för att "vända" på bitar: Fronten medurs, höger upp, toppen medurs, höger ner, toppen moturs, fronten moturs.</p>
-            </div>
-        </section>
+            </section>
 
         <section id="guide-2x2" class="guide-section hidden">
             <h2>Hur man löser en 2x2 (Fickkuben)</h2>
@@ -53,19 +49,27 @@
             <div class="step">
                 <h3>Steg 1: Det första lagret (Den vita basen)</h3>
                 <p>Välj en vit bit som din startbas. Leta sedan efter ett annat vitt hörn som delar en färg till med din startbit (t.ex. röd). Placera den rätt och skjut ner den bredvid.</p>
+                <div class="cube-container" id="cube-container-2x2-step1">
+                    </div>
+                <div class="notation-display">
+                    <p>Notationer för detta steg: R U R'</p>
+                </div>
+                <div class="control-panel">
+                    <button onclick="playMoves('2x2-step1')">Spela upp drag (automatiskt)</button>
+                    <button onclick="nextMove('2x2-step1')">Nästa drag (manuellt)</button>
+                </div>
             </div>
 
-            <div class="step">
-                <h3>Steg 2: Placera de gula hörnen rätt</h3>
-                <p>Vänd på kuben. Nu tittar vi inte på om den gula färgen är uppåt, utan om biten är på <em>rätt plats</em> i förhållande till färgerna på sidan. Byt plats på hörn tills alla fyra är i rätt hörn (även om de är roterade fel).</p>
-            </div>
-
-            <div class="step">
-                <h3>Steg 3: Vrid rätt de sista bitarna</h3>
-                <p>Nu gör vi sista finishen! Genom att repetera ett enkelt ned-vänster-upp-höger-mönster på de felvridna bitarna tvingar vi den gula färgen att titta uppåt utan att blanda bort resten av kuben.</p>
-            </div>
-        </section>
+            </section>
     </main>
+
+    <div id="chat-container">
+        <div id="chat-header">Kubb-boten 🤖</div>
+        <div id="chat-messages">
+            </div>
+        <input type="text" id="chat-input" placeholder="Skriv din fråga här...">
+        <button id="chat-submit">Skicka</button>
+    </div>
 
     <footer>
         <p>Skapad för GitHub Pages • Lycka till med kubningen!</p>
