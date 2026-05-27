@@ -1,112 +1,131 @@
+/* SOLVETHECUBE.COM OFFICIELT TEMA */
 :root {
-    --bg-color: #0f172a;
-    --card-bg: #1e293b;
-    --text-color: #f8fafc;
-    --accent-color: #38bdf8;
-    --nav-bg: #334155;
-    --btn-hover: #0ea5e9;
-}
-
-body.saturday {
-    --bg-color: #fdf2f8;
-    --card-bg: #fff1f2;
-    --text-color: #4c0519;
-    --accent-color: #db2777;
-    --nav-bg: #fbcfe8;
-    --btn-hover: #be185d;
+    --bg-color: #ffffff;
+    --text-color: #1e293b;
+    --accent-color: #28a745;       /* SolveTheCube Grön */
+    --accent-hover: #218838;
+    --card-bg: #ffffff;
+    --nav-bg: #f8fafc;
+    --border-color: #e2e8f0;
+    --text-secondary: #64748b;
 }
 
 body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
     margin: 0;
     padding: 0;
-    transition: all 0.3s ease;
+    -webkit-font-smoothing: antialiased;
 }
 
 header {
     text-align: center;
-    padding: 2rem 1rem;
-    background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, transparent 100%);
+    padding: 3.5rem 1rem 2rem;
+    background-color: #ffffff;
+}
+
+.header-container {
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 h1 {
-    font-size: 2.3rem;
-    margin: 0 0 10px;
+    font-size: 3rem;
+    margin: 0 0 12px;
     font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.03em;
 }
 
-#saturday-btn {
-    background-color: var(--accent-color);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 0.9rem;
-    font-weight: 700;
-    border-radius: 50px;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    transition: all 0.2s;
+h1 .dot {
+    color: var(--accent-color);
 }
-#saturday-btn:hover {
-    transform: scale(1.05);
-    background-color: var(--btn-hover);
+
+#sub-title {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    margin: 0;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.5;
 }
 
 nav {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
     background-color: var(--nav-bg);
-    padding: 10px;
+    padding: 8px;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .nav-btn {
     background: transparent;
-    border: 2px solid transparent;
-    color: var(--text-color);
-    padding: 8px 20px;
-    font-size: 0.95rem;
+    border: none;
+    color: var(--text-secondary);
+    padding: 10px 24px;
+    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    border-radius: 8px;
-    transition: all 0.2s;
+    border-radius: 6px;
+    transition: all 0.15s ease;
 }
+
+.nav-btn:hover {
+    color: var(--text-color);
+    background-color: #f1f5f9;
+}
+
 .nav-btn.active {
-    background-color: var(--card-bg);
-    border-color: var(--accent-color);
+    background-color: #e2e8f0;
+    color: var(--text-color);
 }
 
 .container {
-    max-width: 700px;
-    margin: 20px auto;
-    padding: 0 20px 100px;
+    max-width: 760px;
+    margin: 40px auto;
+    padding: 0 20px 120px;
 }
 
 .step-card {
     background-color: var(--card-bg);
-    border-radius: 16px;
-    padding: 25px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 0;
+}
+
+h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+.step-card p {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: #334155;
+    margin-bottom: 30px;
 }
 
 .workspace {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 25px;
-    margin: 25px 0;
-    background: rgba(0, 0, 0, 0.2);
-    padding: 30px 20px;
-    border-radius: 16px;
+    gap: 30px;
+    margin: 30px 0;
+    background: #f8fafc;
+    padding: 40px 20px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
 }
 
-/* SMART KRASCHSÄKER ISOMETRISK DESIGN */
+/* INTERAKTIV ISOMETRISK KUB-CONTAINER */
 .cube-container {
-    width: 200px;
-    height: 200px;
+    width: 180px;
+    height: 180px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -114,21 +133,21 @@ nav {
 
 .cube-view {
     position: relative;
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     transform: scaleY(0.7) rotate(45deg);
 }
 
 .face-grid {
     position: absolute;
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    gap: 2px;
-    background: #0f172a;
-    padding: 2px;
+    gap: 2.5px;
+    background: #1e293b; /* Svart plastram mellan bitarna */
+    padding: 2.5px;
     box-sizing: border-box;
     border-radius: 4px;
 }
@@ -139,102 +158,127 @@ nav {
 }
 
 .top-face {
-    transform: translate(-20px, -20px);
+    transform: translate(-15px, -15px);
 }
 .left-face {
-    transform: min-height;
-    skewY(-30deg) scaleX(0.866) translate(-60px, 40px);
+    transform: skewY(-30deg) scaleX(0.866) translate(-50px, 35px);
 }
 .right-face {
-    transform: skewX(-30deg) scaleY(0.866) translate(40px, -60px);
+    transform: skewX(-30deg) scaleY(0.866) translate(35px, -50px);
 }
 
-/* FÄRGER PÅ KLISTERMÄRKEN */
+/* FRÄSCHA LJUSA KUBFÄRGER */
 .st {
     width: 100%;
     height: 100%;
     border-radius: 2px;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.25s ease;
 }
-.s-red { background-color: #ef4444; }
-.s-blue { background-color: #3b82f6; }
-.s-orange { background-color: #f97316; }
-.s-green { background-color: #22c55e; }
-.s-white { background-color: #ffffff; }
-.s-yellow { background-color: #eab308; }
+.s-red { background-color: #ff3b30; }
+.s-blue { background-color: #007aff; }
+.s-orange { background-color: #ff9500; }
+.s-green { background-color: #34c759; }
+.s-white { background-color: #ffffff; border: 1px solid #cbd5e1; box-sizing: border-box; }
+.s-yellow { background-color: #ffcc00; }
 
-.control-panel { width: 100%; max-width: 350px; }
+.control-panel {
+    width: 100%;
+    max-width: 360px;
+}
 
 .notation-display {
-    font-size: 1.2rem;
-    font-family: monospace;
+    font-size: 1.25rem;
+    font-family: -apple-system, BlinkMacSystemFont, monospace;
     font-weight: 700;
-    margin-bottom: 15px;
-    background: rgba(0, 0, 0, 0.3);
-    padding: 10px;
+    margin-bottom: 20px;
+    background: #ffffff;
+    padding: 12px;
     border-radius: 8px;
-    border: 1px solid var(--accent-color);
+    border: 1px solid var(--border-color);
     text-align: center;
+    color: #0f172a;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
 
-.btn-group { display: flex; gap: 10px; justify-content: center; }
+.btn-group {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
 
 .action-btn {
-    background-color: var(--nav-bg);
-    color: var(--text-color);
-    border: 1px solid rgba(255,255,255,0.1);
-    padding: 10px 16px;
-    border-radius: 8px;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
     cursor: pointer;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    transition: all 0.15s ease;
 }
-.action-btn:hover {
+
+.btn-primary {
     background-color: var(--accent-color);
-    color: #0f172a;
+    color: white;
+}
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+}
+
+.btn-secondary {
+    background-color: #e2e8f0;
+    color: #334155;
+}
+.btn-secondary:hover {
+    background-color: #cbd5e1;
 }
 
 .instruction-box {
-    background: rgba(255, 255, 255, 0.02);
-    padding: 15px;
-    border-left: 4px solid var(--accent-color);
-    border-radius: 6px;
+    background: #f1f5f9;
+    padding: 16px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #475569;
+    line-height: 1.5;
 }
 
-/* CHATBOT UTSEENDE */
+/* MODERN PROFFSIG AI-CHATBUBBLA */
 #chat-launcher {
     position: fixed;
-    bottom: 25px;
-    right: 25px;
-    width: 55px;
-    height: 55px;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
     background-color: var(--accent-color);
-    color: #0f172a;
+    color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.6rem;
     cursor: pointer;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 16px rgba(40, 167, 69, 0.3);
     z-index: 1001;
+    transition: transform 0.2s ease;
+}
+#chat-launcher:hover {
+    transform: scale(1.05);
 }
 
 #chat-widget {
     position: fixed;
-    bottom: 95px;
-    right: 25px;
-    width: 300px;
-    height: 360px;
-    background-color: var(--card-bg);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 16px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    bottom: 105px;
+    right: 30px;
+    width: 320px;
+    height: 420px;
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.12);
     z-index: 1000;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: bottom right;
 }
 
 .chat-closed {
@@ -244,55 +288,83 @@ nav {
 }
 
 #chat-header {
-    background-color: var(--nav-bg);
-    padding: 12px 15px;
+    background-color: #0f172a;
+    color: white;
+    padding: 16px;
     font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
+
+.chat-close-btn {
+    cursor: pointer;
+    font-size: 1.3rem;
+    opacity: 0.7;
+}
+.chat-close-btn:hover { opacity: 1; }
 
 #chat-logs {
     flex: 1;
-    padding: 12px;
+    padding: 16px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    background: rgba(0,0,0,0.1);
+    gap: 12px;
+    background: #f8fafc;
 }
 
 .msg {
-    padding: 8px 12px;
-    border-radius: 12px;
-    max-width: 85%;
-    font-size: 0.85rem;
+    padding: 10px 14px;
+    border-radius: 8px;
+    max-width: 80%;
+    font-size: 0.9rem;
+    line-height: 1.4;
 }
-.msg.bot { background-color: var(--nav-bg); color: var(--text-color); align-self: flex-start; border-bottom-left-radius: 2px; }
-.msg.user { background-color: var(--accent-color); color: #0f172a; align-self: flex-end; border-bottom-right-radius: 2px; }
+.msg.bot {
+    background-color: #ffffff;
+    color: var(--text-color);
+    align-self: flex-start;
+    border: 1px solid var(--border-color);
+}
+.msg.user {
+    background-color: var(--accent-color);
+    color: white;
+    align-self: flex-end;
+}
 
 #chat-input-container {
     display: flex;
-    padding: 8px;
-    background-color: var(--card-bg);
-    border-top: 1px solid rgba(255,255,255,0.05);
+    padding: 12px;
+    background-color: #ffffff;
+    border-top: 1px solid var(--border-color);
 }
 
 #chat-input {
     flex: 1;
-    background: rgba(0,0,0,0.2);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: #f1f5f9;
+    border: 1px solid var(--border-color);
     color: var(--text-color);
-    padding: 8px;
+    padding: 10px;
     border-radius: 6px;
     outline: none;
+    font-size: 0.9rem;
+}
+#chat-input:focus {
+    border-color: var(--accent-color);
+    background: #ffffff;
 }
 
 #chat-input-container button {
     background: transparent;
     border: none;
     color: var(--accent-color);
-    padding: 0 12px;
+    padding: 0 0 0 12px;
     font-weight: 700;
     cursor: pointer;
+    font-size: 0.95rem;
 }
 
 .hidden { display: none !important; }
-footer { text-align: center; opacity: 0.2; padding: 20px; font-size: 0.8rem; }
+footer { text-align: center; color: var(--text-secondary); opacity: 0.5; padding: 40px; font-size: 0.85rem; }
