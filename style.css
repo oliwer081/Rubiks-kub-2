@@ -1,0 +1,125 @@
+:root {
+    --bg-color: #f4f7f6;
+    --text-color: #333;
+    --accent-color: #2080f0;
+    --card-bg: #ffffff;
+    --header-bg: #1e293b;
+    --header-text: #ffffff;
+}
+
+/* Lördagstema (Lördagsgodis & Fest) */
+body.saturday {
+    --bg-color: #ffe6f2;
+    --text-color: #4a004a;
+    --accent-color: #ff007f;
+    --card-bg: #fff0f5;
+    --header-bg: #990066;
+    --header-text: #ffff00;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    transition: all 0.3s ease;
+}
+
+header {
+    background-color: var(--header-bg);
+    color: var(--header-text);
+    text-align: center;
+    padding: 2rem 1rem;
+    transition: all 0.3s ease;
+}
+
+#saturday-btn {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-top: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+#saturday-btn:hover {
+    transform: scale(1.05);
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    background-color: #cbd5e1;
+}
+
+body.saturday nav {
+    background-color: #ffb3d9;
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    font-weight: 600;
+    color: #475569;
+}
+
+.nav-btn.active {
+    background-color: var(--bg-color);
+    color: var(--accent-color);
+    border-bottom: 3px solid var(--accent-color);
+}
+
+.container {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.guide-section {
+    animation: fadeIn 0.5s ease;
+}
+
+.step {
+    background-color: var(--card-bg);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    border-left: 5px solid var(--accent-color);
+}
+
+.tip {
+    background-color: #e2e8f0;
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 10px;
+    font-size: 0.95rem;
+}
+
+body.saturday .tip {
+    background-color: #ffccf2;
+}
+
+.hidden {
+    display: none;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 0.9rem;
+    color: #64748b;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
