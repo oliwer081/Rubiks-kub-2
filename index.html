@@ -3,74 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kubsidan - Lär dig lösa Rubiks Kub</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+    <title>SolveTheCube - Interaktiv 3D Guide</title>
+    <style>
+        /* MODERN CLEAN DESIGN (Inspirerad av solvethecube.com) */
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --accent-color: #38bdf8;
+            --nav-bg: #334155;
+            --btn-hover: #0ea5e9;
+        }
 
-    <header>
-        <h1 id="main-title">Lär dig lösa Rubiks Kub 🧩</h1>
-        <p id="sub-title">Pedagogiska guider steg-för-steg, helt utan att bara memorera blinda drag!</p>
-        <button id="saturday-btn" onclick="toggleSaturday()">Ändra till lördag! 🎉</button>
-    </header>
+        body.saturday {
+            --bg-color: #fdf2f8;
+            --card-bg: #fff1f2;
+            --text-color: #4c0519;
+            --accent-color: #db2777;
+            --nav-bg: #fbcfe8;
+            --btn-hover: #be185d;
+        }
 
-    <nav>
-        <button class="nav-btn active" onclick="switchCube('3x3')">Rubiks Kub 3x3</button>
-        <button class="nav-btn" onclick="switchCube('2x2')">Fickkub 2x2</button>
-    </nav>
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-    <main class="container">
-        <section id="guide-3x3" class="guide-section">
-            <h2>Hur man löser en 3x3 (Lager-för-lager-metoden)</h2>
-            <p>Istället för att bara göra drag, tänk på kuben som tre olika våningar på ett hus som ska byggas nerifrån och upp.</p>
-            
-            <div class="step">
-                <h3>Steg 1: Det vita korset (Grunden)</h3>
-                <p>Målet är att skapa ett vitt kors på undersidan. Det viktiga här är att kantbitarnas sidofärger måste matcha mittbitarna på sidorna (t.ex. röd/vit kantbit mot röd mittbit).</p>
-                <div class="tip">💡 <strong>Tänk på:</strong> Mittbitarna rör sig aldrig. De bestämmer vilken färg sidan ska ha!</div>
-            </div>
+        header {
+            text-align: center;
+            padding: 3rem 1rem 2rem;
+            background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 100%);
+        }
 
-            <div class="step">
-                <h3>Steg 2: Det första lagret (Hörnen)</h3>
-                <p>Nu ska vi sätta de fyra vita hörnbitarna på rätt plats. Hitta ett hörn med vitt på, placera det ovanför där det ska ner, och skicka ner det genom att öppna sidan, sätta i biten och stänga sidan.</p>
-            </div>
+        h1 {
+            font-size: 2.8rem;
+            margin: 0 0 10px;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+        }
 
-            <div class="step">
-                <h3>Steg 3: Det andra lagret (Mellanvåningen)</h3>
-                <p>Vänd på kuben så det vita lagret är nedåt. Nu ska vi sätta dit kantbitarna på mittenlagret. Vi gömmer biten åt motsatt håll dit den ska, lyfter upp hörnet den ska bo med, parar ihop dem och sätter ner båda tillsammans.</p>
-            </div>
+        #saturday-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        #saturday-btn:hover {
+            transform: scale(1.05);
+            background-color: var(--btn-hover);
+        }
 
-            <div class="step">
-                <h3>Steg 4: Det gula korset (Taket påbörjas)</h3>
-                <p>Nu ska vi göra ett gult kors på ovansidan utan att förstöra det vi redan byggt. Här använder vi en sekvens för att "vända" på bitar: Fronten medurs, höger upp, toppen medurs, höger ner, toppen moturs, fronten moturs.</p>
-            </div>
-        </section>
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            background-color: var(--nav-bg);
+            padding: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
 
-        <section id="guide-2x2" class="guide-section hidden">
-            <h2>Hur man löser en 2x2 (Fickkuben)</h2>
-            <p>En 2x2 har inga mittbitar eller kantbitar, bara hörn! Den är mycket snabbare att lära sig när du förstår principen.</p>
+        .nav-btn {
+            background: transparent;
+            border: 2px solid transparent;
+            color: var(--text-color);
+            padding: 10px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.2s;
+            opacity: 0.8;
+        }
+        .nav-btn.active {
+            background-color: var(--card-bg);
+            border-color: var(--accent-color);
+            opacity: 1;
+        }
 
-            <div class="step">
-                <h3>Steg 1: Det första lagret (Den vita basen)</h3>
-                <p>Välj en vit bit som din startbas. Leta sedan efter ett annat vitt hörn som delar en färg till med din startbit (t.ex. röd). Placera den rätt och skjut ner den bredvid.</p>
-            </div>
+        .container {
+            max-width: 750px;
+            margin: 40px auto;
+            padding: 0 20px 120px;
+        }
 
-            <div class="step">
-                <h3>Steg 2: Placera de gula hörnen rätt</h3>
-                <p>Vänd på kuben. Nu tittar vi inte på om den gula färgen är uppåt, utan om biten är på <em>rätt plats</em> i förhållande till färgerna på sidan. Byt plats på hörn tills alla fyra är i rätt hörn (även om de är roterade fel).</p>
-            </div>
+        .step-card {
+            background-color: var(--card-bg);
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
 
-            <div class="step">
-                <h3>Steg 3: Vrid rätt de sista bitarna</h3>
-                <p>Nu gör vi sista finishen! Genom att repetera ett enkelt ned-vänster-upp-höger-mönster på de felvridna bitarna tvingar vi den gula färgen att titta uppåt utan att blanda bort resten av kuben.</p>
-            </div>
-        </section>
-    </main>
+        h2 { font-size: 1.8rem; margin-top: 10px; font-weight: 700; }
 
-    <footer>
-        <p>Skapad för GitHub Pages • Lycka till med kubningen!</p>
-    </footer>
+        /* NY 3D ARBETSSTRUKTUR */
+        .workspace {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 35px;
+            margin: 35px 0;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 40px 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
 
-    <script src="script.js"></script>
-</body>
-</html>
+        /* ÄKTA CSS 3D RUBIKS KUB SCEN */
+        .scene {
+            width: 150px;
+            height: 150px;
+            perspective: 600px;
+        }
+
+        .cube3d {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: rotateX(-25deg) rotateY(45deg);
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Enskilda sidor med äkta 3D-placering */
+        .face {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border: 4px solid #0f172a;
+            box-sizing: border-box;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 2px;
+            background: #0f172a;
+            border-radius: 8px;
+        }
+
+        /* Skapa de små klistermärkena (stickers) på kuben */
+        .sticker {
+            width: 100%;
+            height: 100%;
+            border-radius: 3px;
+        }
+
+        /* Positionera sidorna i rymden */
+        .front  { transform: rotateY(0deg) translateZ(75px); }
+        .back   { transform: rotateY(180deg) translateZ(75px); }
+        .top    { transform: rotateX(90deg) translateZ(75px); }
+        .bottom { transform: rotateX(-90deg) translateZ(75px); }
+        .left   { transform: rotateY(-90deg) translateZ(75px); }
+        .right  { transform: rotateY(90deg) translateZ(75px); }
+
+        /* Färger för klistermärkena */
+        .s-red { background-color: #dc2626; }
+        .s-blue { background-color: #2563eb; }
+        .s-orange { background-color: #ea580c; }
+        .s-green { background-color: #16a34a; }
+        .s-white { background-color: #ffffff; }
+        .s-yellow { background-color: #eab308; }
+
+        /* Anpassning för 2x2 kubens utseende */
+        .mini-cube .face {
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+        }
+
+        /* KONTROLLER */
+        .control-panel { width: 100%; max-width: 400px; }
+
+        .notation-display {
+            font-size: 1.4rem;
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--accent-color);
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .btn-group { display: flex; gap: 12px; justify-content: center; }
+
+        .action-btn {
+            background-color: var(--nav-bg);
+            color: var(--text-color);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 12px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        .action-btn:hover {
+            background-color: var(--accent-color);
+            color: #0f172a;
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .instruction-box {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 20px;
+            border-left: 4px solid var(--accent-
